@@ -1,7 +1,7 @@
-from type_package import *
-from mrp import MRP
-from mrpv import MRPv
-from policy import Policy
+from processes.type_package import *
+from processes.mrp import MRP
+from processes.mrpv import MRPv
+from processes.policy import Policy
 
 class MDP(Generic[S, A]):
     

@@ -1,3 +1,4 @@
 .DS_Store
 .ipynb_checkpoints
 .ipynb_checkpoints/Lecture_1-checkpoint.ipynb
+__pycache__

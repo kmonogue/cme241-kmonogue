@@ -1,5 +1,5 @@
-from type_package import *
-from mp import MP
+from processes.type_package import *
+from processes.mp import MP
 
 class MRP(MP):
     

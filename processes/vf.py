@@ -1,4 +1,4 @@
-from type_package import *
+from processes.type_package import *
 
 class VF(Generic[S]):
     
@@ -10,7 +10,7 @@ class VF(Generic[S]):
             self.value_dict_ = self.produce_dict(vec, states)
         
     def get_value(self, state: S) -> float:
-        return self.value_dict_data
+        return self.value_dict_[state]
         
     def get_vector(self, states: List[S]) -> np.array:
         vec = np.zeros(len(states))

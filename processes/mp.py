@@ -1,4 +1,4 @@
-from type_package import *
+from processes.type_package import *
 
 class MP(Generic[S]):
     
