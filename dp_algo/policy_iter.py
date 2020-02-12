@@ -17,7 +17,18 @@ def policy_improve(mdp: MDP, vf: VF) -> Policy:
         for action in mdp.s_a_s_[state].keys():
             action_val = 0
             for state2 in mdp.s_a_s_[state][action].keys():
-                action_val += mdp.s_a_s_[state][action][state2] * vf.get_value(state2)
+                
+                if state == 8:
+                    print(mdp.s_a_r_[state][action])
+                    print(mdp.s_a_s_[state][action][state2] * vf.get_value(state2))
+                    print(state2)
+                action_val += mdp.s_a_s_[state][action][state2] * (mdp.s_a_r_[state][action] + vf.get_value(state2))
+            if state == 8: 
+                print(action)
+                print(action_val)
+                print(total_prob)
+                print(vf)
+                print()
             if action_val > max_val:
                 max_val = action_val
                 max_action = [action]
@@ -34,8 +45,8 @@ def policy_iter(mdp: MDP, policy: Policy, tol: float) -> (VF, Policy):
     
     vf = policy_eval(mdp, policy, tol)
     v_old = vf.get_vector(list(mdp.states_))
-    v_new = np.zeros(len(v_old))
-    while (not (np.array_equal(v_old, v_new))):
+    v_new = np.ones(len(v_old))
+    while (max(abs(v_new - v_old)) > tol):
         v_old = v_new
         new_pol = policy_improve(mdp, vf)
         new_vf = policy_eval(mdp, new_pol, tol)
@@ -171,7 +182,4 @@ if __name__ == '__main__':
     #new_pol = policy_improve(mdp, pol, vf)
     #print(new_pol)
     vf, pol = policy_iter(mdp, pol, 0.001)
-    print(vf)
-    print()
-    print(pol)
             

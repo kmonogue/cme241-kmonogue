@@ -1,33 +1,51 @@
 import sys
 sys.path.append('/Users/kevinmonogue/cme241-kmonogue/')
 
-from processes.mdp import MDP
+from processes.mdpss import MDP
 from processes.policy import Policy
 from processes.vf import VF
 import numpy as np
 import copy
 
 def policy_eval(mdp: MDP, policy: Policy, tol: float) -> VF:
+
+    # initialize containers
     vf = {}
     v_old = np.ones(len(mdp.states_))
     v_new = np.zeros(len(mdp.states_))
+
+    # initialize values to zero
     for state in mdp.states_:
         vf[state] = 0
+
+    # while not converged
     while max(np.abs(v_new - v_old)) > tol:
         v_old = copy.deepcopy(v_new)
+
+        #for each state
         for i, state in enumerate(mdp.states_):
             next_val = 0
+
+            # find value of each action
             for action in policy.s_a_prob_[state].keys():
-                prob = policy.s_a_prob_[state][action]
-                reward = mdp.s_a_r_[state][action]
-                future = 0
+                action_prob = policy.s_a_prob_[state][action]
+                action_val = 0
+
+                # value is sum across all end states
+                # immediate reward + discounted future reward
                 for state2 in mdp.s_a_s_[state][action].keys():
-                    future += vf[state2] * mdp.s_a_s_[state][action][state2]
-                future = future * mdp.gamma_
-                next_val += prob * (reward + future)
+                    prob_move = mdp.s_a_s_[state][action][state2][0]
+                    move_reward = mdp.s_a_s_[state][action][state2][1]
+                    move_future = vf[state2]
+                    action_val += prob_move * (move_reward + mdp.gamma_ * move_future)
+
+                # sum across all actions
+                next_val += action_prob * (action_val)
                 
+            # update values
             v_new[i] = next_val
             vf[state] = next_val
+            
     return VF(vf)
 
 

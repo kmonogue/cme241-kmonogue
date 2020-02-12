@@ -1,33 +1,71 @@
 import sys
 sys.path.append('/Users/kevinmonogue/cme241-kmonogue/')
 
-from processes.mdp import MDP
+from processes.mdpss import MDP
 from processes.policy import Policy
 from processes.vf import VF
-from dp_algo.policy_eval import *
+from dp_algo.policy_evalss import *
 import numpy as np
 import copy
 
-def value_iter(mdp: MDP, vf: VF, tol: float) -> VF:
+def policy_improve(mdp: MDP, vf: VF) -> Policy:
+    
+    new_pol = {}
 
-    v_old = np.ones(len(mdp.states_))
-    v_new = np.zeros(len(v_old))
-    while (np.linalg.norm(v_old - v_new) > tol):
+    # for each state
+    for state in mdp.states_:
+
+        # find maximizing action
+        max_val = float('-inf')
+        max_action = []
+
+        # iterate across actions
+        for action in mdp.s_a_s_[state].keys():
+            action_val = 0
+
+            # find the expected action value
+            for state2 in mdp.s_a_s_[state][action].keys():
+                action_val += mdp.s_a_s_[state][action][state2][0] * 
+                (mdp.s_a_s_[state][action][state2][1] + 
+                mdp.gamma_ * vf.value_dict_[state2])
+
+            # update if new max
+            if action_val > max_val:
+                max_val = action_val
+                max_action = [action]
+            elif action_val == max_val:
+                max_action.append(action)
+            
+        actions = {}
+        for action in max_action:
+            actions[action] = 1.0 / len(max_action)
+
+        new_pol[state] = actions
+    
+    return Policy(new_pol)
+
+def policy_iter(mdp: MDP, policy: Policy, tol: float) -> (VF, Policy):
+    
+    # evaluate input policy
+    vf = policy_eval(mdp, policy, tol)
+    v_old = vf.get_vector(list(mdp.states_))
+    v_new = np.ones(len(v_old))
+
+    # until we've converged
+    while (max(abs(v_new - v_old)) > tol):
         v_old = v_new
-        for state in mdp.states_:
-            max_val = float('-inf')
-            for action in mdp.s_a_s_[state]:
-                val = mdp.s_a_r_[state][action]
-                for state2 in mdp.s_a_s_[state][action]:
-                    val += mdp.s_a_s_[state][action][state2] * vf.get_value(state2)
-                if val > max_val:
-                    max_val = val
-            vf.value_dict_[state] = max_val
-        v_new = vf.get_vector(list(mdp.states_))
 
-    return vf
+        #imporve policy
+        new_pol = policy_improve(mdp, vf)
+        new_vf = policy_eval(mdp, new_pol, tol)
+        v_new = new_vf.get_vector(list(mdp.states_))
+        vf = new_vf
+
+    return new_vf, new_pol
+
 
 if __name__ == '__main__':
+
     mdp_data = {
             0: {
                 'n': ({0 : 1.0}, 0.0),
@@ -148,7 +186,9 @@ if __name__ == '__main__':
         0: {'n': 0.25, 's': 0.25, 'w': 0.25, 'e': 0.25},
     }
 
-    policy = Policy(policy_data)
-    vf = policy_eval(mdp, policy, 0.001)
-
-    print(value_iter(mdp, vf))
+    pol = Policy(policy_data)
+    #vf = policy_eval(mdp, pol, 0.001)
+    #new_pol = policy_improve(mdp, pol, vf)
+    #print(new_pol)
+    vf, pol = policy_iter(mdp, pol, 0.001)
+            

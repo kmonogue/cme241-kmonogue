@@ -6,7 +6,7 @@ from processes.policy import Policy
 class MDP(Generic[S, A]):
     
     def __init__(self, 
-                 data: Mapping[S, Mapping[A, Tuple[Mapping[S, float, float]]]], 
+                 data: Mapping[S, Mapping[A, Mapping[S, Tuple[float, float]]]], 
                  gamma: float) -> None:
         
         # dictionaries to store data
@@ -24,9 +24,9 @@ class MDP(Generic[S, A]):
         #self.s_a_r_ = s_a_r
         self.gamma_ = gamma
         
-        self.t_states_ = self.get_terminal_states()
+        #self.t_states_ = self.get_terminal_states()
         # a list to preserve order for transition matrix
-        self.nt_states_ = self.get_nt_states()
+        #self.nt_states_ = self.get_nt_states()
  
     def change_reward(self, state: S, action: A, r: float) -> None:
         self.s_a_r_[state][action] = r
