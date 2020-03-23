@@ -10,3 +10,4 @@ p2.py
 final
 *.gz
 *.log
+.gitignore

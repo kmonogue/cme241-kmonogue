@@ -11,3 +11,5 @@ Repository for assignments done in CME 241 Winter 2020 by Kevin Monogue.
 **rl_market_making** contains RL implementation of the TOB market making financial problem
 
 **notes** contains assorted notes, particular with regards to mathematical lessons
+
+**options_pricing** contains implementation of option pricing and early exercise algorithms
