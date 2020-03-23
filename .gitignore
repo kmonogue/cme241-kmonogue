@@ -1,0 +1,13 @@
+
+.DS_Store
+.ipynb_checkpoints
+.ipynb_checkpoints/Lecture_1-checkpoint.ipynb
+__pycache__
+cme241-midterm.py
+*.png
+p2.py
+.vscode
+*.aux
+final
+*.gz
+*.log
