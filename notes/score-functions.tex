@@ -1,0 +1,73 @@
+% The following homework template was modified from the Fall 2017 CIS 160 homework template.
+
+\documentclass{article}
+\usepackage[letterpaper,top=0.5in,bottom=0.5in,left=1.2in,right=1.2in,includeheadfoot]{geometry}
+\usepackage{amssymb,amsmath}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{tabu}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{amsmath}
+
+\renewcommand{\baselinestretch}{1.3}
+\pagestyle{fancy}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\headheight}{0pt}
+
+\fancypagestyle{firstpage}{
+  \fancyhead{}
+  \fancyfoot{}
+}
+
+% Modify here to change homework number, name, and PennKey as necessary.
+\newcommand{\HomeworkNo}{3}
+\newcommand{\MyName}{Kevin Monogue (kmonogue@stanford.edu)}
+
+\fancyhead[L]{\MyName}
+
+\fancyhead[R]{}
+
+\newcommand{\PrintFirstHeader}{
+  CME 241 \vspace{5pt} \hfill {\Large{\MyName}}
+  \\
+  {\LARGE{\textbf{Score Function}}} 
+
+  \rule{\textwidth}{0.4pt}}
+  
+\begin{document}
+\thispagestyle{firstpage}
+\PrintFirstHeader{}
+
+% Write homework solutions here.
+Score is defined as the gradient of the log likelihood function, $\nabla log (L(X; \theta))$ or in our case with regards to a parametric policy $\nabla log (\pi(s, a; \theta))$. We will derive the score function for a couple common functions. \\
+\textbf{Softmax}\\
+The Softmax function is defined in the setting of a policy as 
+\begin{align*}
+\pi(s, a; \theta) = \frac{e^{\theta \cdot \phi(s, a)}}{\sum_{a' \in A} e^{\theta \cdot \phi(s, a')} }
+\end{align*} 
+We solve for the score by taking the log of the function and differentiating.
+\begin{align*}
+log (\pi(s, a; \theta)) & = log(\frac{(e^{\theta \cdot \phi(s, a)}}{\sum_{a' \in A} e^{\theta \cdot \phi(s, a')} }) \\
+& = log(e^{\theta \cdot \phi(s, a)}) - log(\sum_{a' \in A} e^{\theta \cdot \phi(s, a')}) \\
+& = \theta \cdot \phi(s, a) - log(\sum_{a' \in A} e^{\theta \cdot \phi(s, a')}) \\
+\nabla log (\pi(s, a; \theta)) & = \phi(s, a) - \nabla_{\theta} log(\sum_{a' \in A} e^{\theta \cdot \phi(s, a')}) \\
+& = \phi(s, a) - \frac{\sum_{a' \in A} \phi(s, a') \cdot e^{\theta \cdot \phi(s, a')}}{\sum_{a' \in A} e^{\theta \cdot \phi(s, a')}}\\
+& = \phi(s, a) - \sum_{a' \in A} \pi(s, a'; \theta) \cdot \phi(s, a') \\
+& = \phi(s, a) - E_{\pi}[\phi(s, )]
+\end{align*}
+Note the second to last line simply uses the definition of the policy function from above.  \\\\
+\textbf{Gaussian Normal} \\
+Our policy can also be defined by a continuous distrubition, such as a normal distribution. In this case, the probability, $a \sim N(\theta \cdot \phi(s), \sigma ^2)$. The policy is therefore just the pdf and we can solve as normal.
+\begin{align*}
+\pi(a, s; \theta) & = \frac{1}{\sigma \sqrt(2\pi)} \cdot e^{-\frac{1}{2} \cdot (\frac{a - \phi(s) \cdot \theta}{\sigma})^2} \\
+log(\pi) & = log(\frac{1}{\sigma \sqrt(2\pi)} ) + log(e^{-\frac{1}{2} \cdot (\frac{a - \phi(s) \cdot \theta}{\sigma})^2}) \\
+& = log(\frac{1}{\sigma \sqrt(2\pi)} )  -\frac{1}{2} \cdot (\frac{a - \phi(s) \cdot \theta}{\sigma})^2 \\
+\nabla_{\theta} log(\pi(s, a; \theta) & = 0 + -\frac{1}{2} \cdot 2 \cdot -\phi(s) \cdot \frac{a - \theta \cdot \phi(s)}{\sigma^2} \\
+& = \phi(s) \cdot \frac{a - \theta \cdot \phi(s)}{\sigma^2}
+\end{align*}
+\end{document}
