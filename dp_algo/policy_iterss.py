@@ -55,8 +55,10 @@ def policy_iter(mdp: MDP, policy: Policy, tol: float) -> (VF, Policy):
     while (max(abs(v_new - v_old)) > tol):
         v_old = v_new
 
-        #imporve policy
+        #improve policy
         new_pol = policy_improve(mdp, vf)
+
+        #evaluate policy and update
         new_vf = policy_eval(mdp, new_pol, tol)
         v_new = new_vf.get_vector(list(mdp.states_))
         vf = new_vf

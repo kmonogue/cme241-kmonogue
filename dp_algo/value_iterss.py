@@ -12,35 +12,36 @@ def value_iter(mdp: MDP, vf: VF, tol: float) -> VF:
 
     v_old = np.ones(len(mdp.states_))
     v_new = np.zeros(len(v_old))
-    count = 0
+
+    # until we converge
     while (np.linalg.norm(v_old - v_new) > tol):
-        count += 1
+
         v_old = v_new
+
+        # for each state
         for state in mdp.states_:
+
+            # find the value maximizing action
             max_val = float('-inf')
             for action in mdp.s_a_s_[state]:
                 val = 0
+
+                # update the value by each possible next state
+                # weighted by probability of moving to that state
                 for state2 in mdp.s_a_s_[state][action]:
                     prob_move = mdp.s_a_s_[state][action][state2][0]
                     future_val = vf.value_dict_[state2]
                     current_reward = mdp.s_a_s_[state][action][state2][1]
-                    '''if count == 2 and state == 2:
-                        print(state2)
-                        print(future_val)
-                        print(prob_move)
-                        print(current_reward) '''
                     val += prob_move * (mdp.gamma_ * future_val + current_reward)
+
+                #if new max update
                 if val > max_val:
                     max_val = val
-                '''if count == 2 and state == 2:
-                    print(action)
-                    print(val)
-                    print()'''
-
+            #update dictionary
             vf.value_dict_[state] = max_val
+        
+        #update vector
         v_new = vf.get_vector(list(mdp.states_))
-        #print(vf.value_dict_[1])
-        #print(vf.value_dict_[2])
 
     return vf
 

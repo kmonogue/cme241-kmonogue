@@ -5,3 +5,8 @@ __pycache__
 cme241-midterm.py
 *.png
 p2.py
+.vscode
+*.aux
+final
+*.gz
+*.log

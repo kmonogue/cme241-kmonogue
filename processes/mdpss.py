@@ -11,14 +11,6 @@ class MDP(Generic[S, A]):
         
         # dictionaries to store data
         s_a_s = data
-        '''
-        #s_a_r = {}
-        for state in data.keys():
-            s_a_s[state] = {}
-            s_a_r[state] = {}
-            for action in data[state].keys():
-                s_a_s[state][action] = data[state][action][0]
-                s_a_r[state][action] = data[state][action][1] '''
         self.states_ = set(data.keys())
         self.s_a_s_ = s_a_s
         #self.s_a_r_ = s_a_r

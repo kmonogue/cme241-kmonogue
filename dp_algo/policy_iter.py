@@ -17,18 +17,7 @@ def policy_improve(mdp: MDP, vf: VF) -> Policy:
         for action in mdp.s_a_s_[state].keys():
             action_val = 0
             for state2 in mdp.s_a_s_[state][action].keys():
-                
-                if state == 8:
-                    print(mdp.s_a_r_[state][action])
-                    print(mdp.s_a_s_[state][action][state2] * vf.get_value(state2))
-                    print(state2)
-                action_val += mdp.s_a_s_[state][action][state2] * (mdp.s_a_r_[state][action] + vf.get_value(state2))
-            if state == 8: 
-                print(action)
-                print(action_val)
-                print(total_prob)
-                print(vf)
-                print()
+                action_val += mdp.s_a_s_[state][action][state2] * (mdp.s_a_r_[state][action] + mdp.gamma_ * vf.get_value(state2))
             if action_val > max_val:
                 max_val = action_val
                 max_action = [action]
